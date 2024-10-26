@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: demo-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/spring-user-service
+    username: postgres
+    password: 2255
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret-key: e8ccfb7ac4fbbbd42b73e0f126c6da2050f347fce2ff7f8fffc1d74418c0d58182a7ccac19db41f7a45e3a9abe2507eaa4996a5928c89359ee8e9975f5794217

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: demo-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+jwt:
+  secret-key: ${SECRET_KEY}
