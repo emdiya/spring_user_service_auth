@@ -27,12 +27,10 @@ public class UserController {
         }
 
     }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserModel user) {
         try {
-            var token = userService.login(user);
-            return token;
+             return userService.login(user);
         } catch (Exception e) {
             return new ResponseEntity<>(Response.error(e.toString()), HttpStatus.NOT_FOUND);
         }

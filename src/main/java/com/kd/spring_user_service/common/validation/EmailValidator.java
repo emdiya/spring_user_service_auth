@@ -1,4 +1,4 @@
-package com.kd.spring_user_service.validation;
+package com.kd.spring_user_service.common.validation;
 
 import com.kd.spring_user_service.dto.UserDto;
 import com.kd.spring_user_service.model.UserModel;

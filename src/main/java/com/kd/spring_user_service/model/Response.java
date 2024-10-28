@@ -66,6 +66,10 @@ public class Response<T> {
         return new Response<>("404", message);
     }
 
+    public static Response<Void> forbidden(String message) {
+        return new Response<>("403", message);
+    }
+
     public static Response error(String message) {
         return new Response<>("400", message);
     }

@@ -1,4 +1,5 @@
 package com.kd.spring_user_service.service;
+import com.kd.spring_user_service.common.validation.HandleValidationRequest;
 import com.kd.spring_user_service.dto.RoleDto;
 import com.kd.spring_user_service.dto.UserDto;
 import com.kd.spring_user_service.model.CustomUserDetails;
@@ -7,7 +8,7 @@ import com.kd.spring_user_service.model.Role;
 import com.kd.spring_user_service.model.UserModel;
 import com.kd.spring_user_service.repository.RoleRepository;
 import com.kd.spring_user_service.repository.UserRepository;
-import com.kd.spring_user_service.validation.EmailValidator;
+import com.kd.spring_user_service.common.validation.EmailValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,15 +28,17 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final JWTService jwtService;
     private final EmailValidator emailValidator;
+    private final HandleValidationRequest handleValidationRequest;
 
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, JWTService jwtService, EmailValidator emailValidator) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, AuthenticationManager authenticationManager, JWTService jwtService, EmailValidator emailValidator, HandleValidationRequest handleValidationRequest) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.emailValidator = emailValidator;
+        this.handleValidationRequest = handleValidationRequest;
     }
 
     public boolean isEmailExists(String email) {
@@ -50,7 +53,7 @@ public class UserService {
     public ResponseEntity<?>  registerUser(UserModel regUser){
 
         // Validate register request fields
-        ResponseEntity<?> validationResponse = validateRegisterRequest(regUser);
+        ResponseEntity<?> validationResponse = handleValidationRequest.validateRegisterRequest(regUser);
         if (validationResponse != null) {
             return validationResponse;
         }
@@ -95,42 +98,14 @@ public class UserService {
         return new ResponseEntity<>(Response.success("Register successfully",responseUserDto), HttpStatus.OK);
     }
 
-    private ResponseEntity<?> validateRegisterRequest(UserModel  logUser) {
-        if (logUser.getEmail() == null || logUser.getEmail().isEmpty()) {
-            return createBadRequestResponse("email is required!");
-        }
-        if (logUser.getUsername() == null || logUser.getUsername().isEmpty()) {
-            return createBadRequestResponse("username is required!");
-        }
-        if (logUser.getPassword() == null || logUser.getPassword().isEmpty()) {
-            return createBadRequestResponse("password is required!");
-        }
 
-        return null;
-    }
 
-    private ResponseEntity<?> validateLoginRequest(UserModel logUser) {
-        if (logUser.getUsername() == null || logUser.getUsername().isEmpty()) {
-            return createBadRequestResponse("Username is required!");
-        }
-
-        if (logUser.getPassword() == null || logUser.getPassword().isEmpty()) {
-            return createBadRequestResponse("Password is required!");
-        }
-
-        return null;
-    }
-
-    private ResponseEntity<?> createBadRequestResponse(String message) {
-        return new ResponseEntity<>(Response.badRequest(message), HttpStatus.BAD_REQUEST);
-    }
-
-    //! Login
+    //? Login
     public ResponseEntity<?> login(UserModel logUser) {
         // Validate login request fields
-        ResponseEntity<?> validationResponse = validateLoginRequest(logUser);
+        ResponseEntity<?> validationResponse = handleValidationRequest.validateLoginRequest(logUser);
         if (validationResponse != null) {
-          return validationResponse;
+            return validationResponse;
         }
         // Find the user in the repository
         Optional<UserModel> optionalUser = userRepository.findByUsername(logUser.getUsername());
@@ -154,7 +129,6 @@ public class UserService {
             return new ResponseEntity<>(Response.failure("An error occurred during authentication: " + e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 

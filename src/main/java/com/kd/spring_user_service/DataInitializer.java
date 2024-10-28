@@ -6,6 +6,8 @@ import com.kd.spring_user_service.repository.RoleRepository;
 import com.kd.spring_user_service.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -15,6 +17,7 @@ public class DataInitializer {
 
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
     public DataInitializer(RoleRepository roleRepository, UserRepository userRepository) {
         this.roleRepository = roleRepository;
@@ -33,21 +36,22 @@ public class DataInitializer {
             }
 
             // Check if the admin user already exists
-            String username = "adminUser";
-            String email = "admin@example.com";
-            if (userRepository.findByUsername(username).isEmpty() && userRepository.findByEmail(email).isEmpty()) {
-                // Initialize a user with the Admin role
+            String username = "kd.admin";
+            String email = "kd.admin@gmail.com";
+            String password ="123456";
+            String encodedPassword = passwordEncoder.encode(password);
+            if (userRepository.findByUsername(username).isEmpty() && userRepository.findByEmail(email).isEmpty()){
                 UserModel adminUser = new UserModel(
+                        "KD",
                         "Admin",
-                        "User",
-                        "1234567890",
+                        "09090900",
                         username,
                         email,
-                        "adminPass",
+                        encodedPassword,
                         "Male",
-                        "Administrator",
+                        "Super Admin",
                         LocalDateTime.now(),
-                        "Admin City",
+                        "Phnom Penh",
                         new Role(4, "Super Admin")
                 );
                 userRepository.save(adminUser);

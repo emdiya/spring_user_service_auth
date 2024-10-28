@@ -106,11 +106,33 @@ This guide enables a structured, role-based access system for both users and adm
               "password":"12456"
               }'
           ```    
-    ```text
-    -User Register: http://localhost:8080/user/register
-    -User Login: http://localhost:8080/user/login
-    -Forgot Password: http://localhost:8080/user/forgotpassword
-    -User Info: http://localhost:8080/user/info
-    -Admin Dashboard: http://localhost:8080/admin/dashboard
-    ```
+        - Forgot Password
+          ```
+             curl --location 'http://localhost:8080/api/v1/users/register' \
+              --header 'Content-Type: application/json' \
+              --data-raw '{
+              "email":"kd.dev@gmail.com",
+              "username":"kd.dev",
+              "password":"12456"
+              }'
+          ```
+      - **Admin Routes**:
+        - Login Admin
+           ```
+           curl --location 'http://localhost:8080/api/v1/auth/login' \
+           --header 'Content-Type: application/json' \
+           --data '{
+           "username":"kd.admin",
+           "password":"123456"
+           }'
+           ```    
+        - User
+            ```
+            curl --location 'http://localhost:8080/api/v1/auth/login' \
+            --header 'Content-Type: application/json' \
+            --data '{
+            "username":"kd.admin",
+            "password":"123456"
+            }'
+            ```
 4. **Done**

@@ -35,4 +35,7 @@ public class UserDto {
         this.city = city;
         this.role = role;
     }
+
+    public UserDto(RoleDto roleDto) {
+    }
 }
