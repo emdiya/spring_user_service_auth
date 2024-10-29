@@ -128,11 +128,9 @@ This guide enables a structured, role-based access system for both users and adm
            ```    
         - User
             ```
-            curl --location 'http://localhost:8080/api/v1/auth/login' \
-            --header 'Content-Type: application/json' \
-            --data '{
-            "username":"kd.admin",
-            "password":"123456"
-            }'
+          curl --location 'http://localhost:8080/api/v1/auth/users' \
+          --header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJTdXBlciBBZG1pbiJ9XSwiZW1haWwiOiJrZC5hZG1pbkBnbWFpbC5jb20iLCJzdWIiOiJrZC5hZG1pbiIsImlhdCI6MTczMDE4MDgxOCwiZXhwIjoxNzMwMTg4MDE4fQ.QV0C4Mh6pZyjdKZJxWGHx8Q66PK_AvmTJ5BgHhTPcLc5IKOgL_uq7TCIR70zK0gN5aqNw8Zz8lIG4ku_kDO2XA' \
+          --header 'Cookie: JSESSIONID=4E8AE246FD5D52BB4F94BC96E7635A45'
             ```
+
 4. **Done**

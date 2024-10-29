@@ -7,6 +7,7 @@ import com.kd.spring_user_service.model.CustomUserDetails;
 import com.kd.spring_user_service.model.Response;
 import com.kd.spring_user_service.model.UserModel;
 import com.kd.spring_user_service.repository.AuthRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -72,31 +73,52 @@ public class AuthService {
         }
     }
 
-    public ResponseEntity<?> getUsers() {
+    public ResponseEntity<?> getUsers(HttpServletRequest request) {
 
-        List<UserModel> users = authRepository.fetchAllUsers();
-        if (users.isEmpty()) {
-            return new ResponseEntity<>(Response.notFund("No users found"), HttpStatus.NOT_FOUND);
+        String token = null;
+        Integer roleId = null;
+        try {
+            // Extract the token from the Authorization header
+            String authorizationHeader = request.getHeader("Authorization");
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                return new ResponseEntity<>(Response.error("Missing or invalid token"), HttpStatus.UNAUTHORIZED);
+            }
+            // Get the token and extract the role ID
+            token = authorizationHeader.substring(7);
+             roleId = jwtService.extractRoleId(token);
+
+            // Check if the role ID is 3 or 4
+            if (roleId == 2 || roleId == 3 || roleId == 4) {
+                List<UserModel> users = authRepository.fetchAllUsers();
+                if (users.isEmpty()) {
+                    return new ResponseEntity<>(Response.notFund("No users found"), HttpStatus.NOT_FOUND);
+                }
+                List<UserDto> userDtos = users.stream().map(user -> {
+                    RoleDto roleDto = new RoleDto(
+                            user.getUserRole().getId(),
+                            user.getUserRole().getRoleName()
+                    );
+                    return new UserDto(
+                            user.getFirstname(),
+                            user.getLastname(),
+                            user.getPhoneNumber(),
+                            user.getUsername(),
+                            user.getEmail(),
+                            user.getGender(),
+                            user.getPosition(),
+                            user.getDateOfBirth(),
+                            user.getCity(),
+                            roleDto
+                    );
+                }).collect(Collectors.toList());
+                return new ResponseEntity<>(Response.success("User retrieval successful", Map.of("users", userDtos)), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(Response.forbidden("Access denied"), HttpStatus.FORBIDDEN);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(Response.error(e.toString()), HttpStatus.NOT_FOUND);
         }
-        List<UserDto> userDtos = users.stream().map(user -> {
-            RoleDto roleDto = new RoleDto(
-                    user.getUserRole().getId(),
-                    user.getUserRole().getRoleName()
-            );
-            return new UserDto(
-                    user.getFirstname(),
-                    user.getLastname(),
-                    user.getPhoneNumber(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getGender(),
-                    user.getPosition(),
-                    user.getDateOfBirth(),
-                    user.getCity(),
-                    roleDto
-            );
-        }).collect(Collectors.toList());
-        return new ResponseEntity<>(Response.success("User retrieval successful", Map.of("users", userDtos)), HttpStatus.OK);
+
     }
 
 

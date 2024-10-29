@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -14,20 +15,32 @@ public class CustomUserDetails implements UserDetails {
     @Getter
     private String email;
     private String password;
-    private String role;
+    private Role userRole;
+
 
 
     public CustomUserDetails(UserModel user) {
         this.username = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();
-        this.role = user.getRole();
+        this.userRole = user.getUserRole();
+    }
+
+    public CustomUserDetails(String username, String email, Role userRole) {
+        this.username = username;
+        this.email = email;
+        this.userRole = userRole;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role));
+        return Collections.singleton(new SimpleGrantedAuthority(String.valueOf(userRole.getId())));
     }
+
+    public Long getRoleId() {
+        return userRole.getId();
+    }
+
 
     @Override
     public String getPassword() {
@@ -38,6 +51,10 @@ public class CustomUserDetails implements UserDetails {
     public String getUsername() {
         return username;
     }
+
+
+
+
 
     @Override
     public boolean isAccountNonExpired() {

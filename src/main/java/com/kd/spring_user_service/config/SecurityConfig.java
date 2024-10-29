@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->{
                     request.requestMatchers("/api/v1/users/**").permitAll();
                     request.requestMatchers("/api/v1/auth/login","/api/auth/register").permitAll();
+                    request.requestMatchers("/api/v1/auth/users").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
@@ -56,9 +57,7 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationProvider authenticationProvider(){
-
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
 

@@ -32,6 +32,9 @@ public class Role {
         this.roleName = roleName;
     }
 
+    public Role(Long roleId) {
+    }
+
     public void setId(Long id) {
         this.id = Math.toIntExact(id);
     }

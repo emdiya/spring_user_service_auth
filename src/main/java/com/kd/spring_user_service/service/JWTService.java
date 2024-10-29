@@ -1,6 +1,7 @@
 package com.kd.spring_user_service.service;
 
 import com.kd.spring_user_service.model.CustomUserDetails;
+import com.kd.spring_user_service.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -24,7 +25,8 @@ public class JWTService {
     public String generateToken(CustomUserDetails userDetails){
         Map<String,Object> claims = new HashMap<>();
         claims.put("email",userDetails.getEmail());
-        claims.put("role",userDetails.getAuthorities());
+        claims.put("username", userDetails.getUsername());
+        claims.put("roleId", userDetails.getRoleId());
 
         String subject = userDetails.getUsername() != null ? userDetails.getUsername() : userDetails.getEmail();
 
@@ -42,8 +44,14 @@ public class JWTService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+
     public String extractUsername(String token) {
         return  extractClaim(token, Claims::getSubject);
+    }
+
+    public Integer extractRoleId(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roleId", Integer.class);
     }
 
     private <T> T extractClaim(String token, Function<Claims,T> claimResolver) {
@@ -63,8 +71,6 @@ public class JWTService {
         return ((subject.equals(userDetails.getUsername()) || subject.equals(userDetails.getEmail()))
                 && !isTokenExpired(token));
     }
-
-
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
