@@ -34,6 +34,7 @@ public class UserModel {
 
     private LocalDateTime dateOfBirth;
     private String city;
+    private String otp;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -61,6 +62,11 @@ public class UserModel {
     public String getRole() {
         return userRole != null ? userRole.getRoleName() : null;
     }
+
+    public String getNewPassword(){
+        return password;
+    }
+
 
     // Constructor with required parameters
     public UserModel(String firstname, String lastname, String phoneNumber, String username, String email, String password, String gender, String position, LocalDateTime dateOfBirth, String city, Role userRole) {

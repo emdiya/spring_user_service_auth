@@ -11,7 +11,6 @@ public interface AuthRepository extends JpaRepository<UserModel, Long> {
     Optional<UserModel> findByUsername(String username);
     Optional<UserModel> findByEmail(String email);
 
-
     @Query(value = "SELECT * FROM users ORDER BY created_at DESC", nativeQuery = true)
     List<UserModel> fetchAllUsers();
 

@@ -44,8 +44,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->{
                     request.requestMatchers("/api/v1/users/**").permitAll();
-                    request.requestMatchers("/api/v1/auth/login","/api/auth/register").permitAll();
-                    request.requestMatchers("/api/v1/auth/users").permitAll();
+                    request.requestMatchers("/api/v1/auth/**").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(jwtAuthenticationEntryPoint))
@@ -53,7 +52,6 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider(){

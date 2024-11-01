@@ -51,7 +51,7 @@ src
     - **User Info** (`/user/info`): Accessible only to logged-in users with the `USER` role.
 
 - **Admin Routes**:
-    - **Dashboard** (`/admin/dashboard`): Accessible only to users with the `ADMIN` role.
+    - **Dashboard** (`/auth/users`): Accessible only to users with the `ADMIN` role.
 
 ### Step 3: Set Up Application Properties
 
@@ -62,7 +62,7 @@ src
 This setup:
 - Secures routes based on roles.
 - Provides open routes for user registration (`/user/register`), login (`/user/login`), and password recovery (`/user/forgotpassword`).
-- Secures `/user/info` for logged-in users and `/admin/dashboard` for admin-only access.
+- Secures `/user/info` for logged-in users and `/admin/users` for admin-only access.
 
 This guide enables a structured, role-based access system for both users and admins in a Spring Boot application.
 
@@ -108,14 +108,52 @@ This guide enables a structured, role-based access system for both users and adm
           ```    
         - Forgot Password
           ```
-             curl --location 'http://localhost:8080/api/v1/users/register' \
-              --header 'Content-Type: application/json' \
-              --data-raw '{
-              "email":"kd.dev@gmail.com",
-              "username":"kd.dev",
-              "password":"12456"
-              }'
+           curl --location 'http://localhost:8080/api/v1/users/forgot-password' \
+           --header 'Content-Type: application/json' \
+           --header 'Cookie: JSESSIONID=D54AD0AED85D3E50D3E34901CB99BB55' \
+           --data-raw '{
+           "email":"kd.dev@gmail.com"
+           }'
           ```
+        - Verify OTP
+          ```
+          curl --location 'http://localhost:8080/api/v1/users/verify_otp' \
+          --header 'Content-Type: application/json' \
+          --header 'Cookie: JSESSIONID=D54AD0AED85D3E50D3E34901CB99BB55' \
+          --data-raw '{
+          "email":"kd.dev@gmail.com",
+          "otp":"458067"
+          }'
+         
+        - Reset Password
+          ```
+          curl --location 'http://localhost:8080/api/v1/users/reset_password' \
+          --header 'Content-Type: application/json' \
+          --header 'Cookie: JSESSIONID=D54AD0AED85D3E50D3E34901CB99BB55' \
+          --data-raw '{
+          "email":"kd.dev@gmail.com",
+          "password":"1234567"
+          }'
+          ```
+
+        - Update Password
+          ```
+          curl --location --request PUT 'http://localhost:8080/api/v1/users/update-password' \
+          --header 'Content-Type: application/json' \
+          --header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlSWQiOjEsImVtYWlsIjoiaW5mby5lbWRpeWFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJkZXYuZGV2Iiwic3ViIjoiZGV2LmRldiIsImlhdCI6MTczMDQ1NDg1NCwiZXhwIjoxNzMwNDYyMDU0fQ.bBSbSHynKMtt9Yjqoz7bJoTbq3VoDLRTcQjlVnlyUBxNobOMYng2Acw03enqDGJh2vdqbXnHBJZu0ovvKGnmBw' \
+          --data '{
+          "currentPassword": "1234567",
+          "newPassword": "123456789",
+          "confirmPassword": "123456789"
+          }'
+          ``` 
+        - User Info
+          ```
+          curl --location 'http://localhost:8080/api/v1/users/info' \
+          --header 'Authorization: Bearer eyJhbGciOiJ]IUzUxMiJ9.eyJyb2xlSWQiOjEsImVtYWlsIjoiaW5mby5lbWRpeWFAZ21haWwuY29tIiwidXNlcm5hbWUiOiJkZXYuZGV2Iiwic3ViIjoiZGV2LmRldiIsImlhdCI6MTczMDQ4MDk4NSwiZXhwIjoxNzMwNDg4MTg1fQ.Oh6jaDIBNbWZPDNxwEAZgtSEZoOXyr4zdhdtGWQBN2JJOasBBTHUj15MDjyDMWSdCPFNZNLBjefmEHnNl5h1eA' \
+          --header 'Cookie: JSESSIONID=D54AD0AED85D3E50D3E34901CB99BB55'
+          ```
+
       - **Admin Routes**:
         - Login Admin
            ```
@@ -128,9 +166,9 @@ This guide enables a structured, role-based access system for both users and adm
            ```    
         - User
             ```
-          curl --location 'http://localhost:8080/api/v1/auth/users' \
-          --header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjpbeyJhdXRob3JpdHkiOiJTdXBlciBBZG1pbiJ9XSwiZW1haWwiOiJrZC5hZG1pbkBnbWFpbC5jb20iLCJzdWIiOiJrZC5hZG1pbiIsImlhdCI6MTczMDE4MDgxOCwiZXhwIjoxNzMwMTg4MDE4fQ.QV0C4Mh6pZyjdKZJxWGHx8Q66PK_AvmTJ5BgHhTPcLc5IKOgL_uq7TCIR70zK0gN5aqNw8Zz8lIG4ku_kDO2XA' \
-          --header 'Cookie: JSESSIONID=4E8AE246FD5D52BB4F94BC96E7635A45'
+            curl --location 'http://localhost:8080/api/v1/auth/users' \
+            --header 'Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlSWQiOjQsImVtYWlsIjoia2QuYWRtaW5AZ21haWwuY29tIiwidXNlcm5hbWUiOiJrZC5hZG1pbiIsInN1YiI6ImtkLmFkbWluIiwiaWF0IjoxNzMwMjc5MzY2LCJleHAiOjE3MzAyODY1NjZ9.ROMuNsCYrkOCWfbkOm7HtjQw__XtPKfCoCJGvqXE8mkq0o1K8y83msB3uTtn2LA0k8JJvM0Rbtk0DHgiRr2glw' \
+            --header 'Cookie: JSESSIONID=D54AD0AED85D3E50D3E34901CB99BB55'
             ```
 
 4. **Done**

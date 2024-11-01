@@ -1,7 +1,6 @@
 package com.kd.spring_user_service.service;
 
 import com.kd.spring_user_service.model.CustomUserDetails;
-import com.kd.spring_user_service.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -67,7 +66,6 @@ public class JWTService {
 
     public boolean validateToken(String token, CustomUserDetails userDetails) {
         final String subject = extractUsername(token);
-
         return ((subject.equals(userDetails.getUsername()) || subject.equals(userDetails.getEmail()))
                 && !isTokenExpired(token));
     }
